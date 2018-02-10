@@ -1,6 +1,7 @@
 To use the DropBox class, you simply need to link the DropBox.js file
 into your html file. 
 To create a DropBox object, first construct the following html:
+
     <div class="drop-box">
         <div class="db-label">This is a DropBox</div>
         <div class="db-list">
@@ -8,6 +9,9 @@ To create a DropBox object, first construct the following html:
             </div>
         </div>
     </div>
+
+**it is recommended to copy and paste this html into your own code
+
 The class names are arbitrary and technically unnecessary, but for
 claritie's sake, I will refer to internal DropBox elements by their
 class names above. 
@@ -20,7 +24,14 @@ togglable by clicking on the db-label element.
 The recommended procedure for initializing DropBoxes is to give the
 root element (drop-box element here) a class name and pass its selector
 string to the static DropBox method as follows: 
-DropBox.initDropBoxes(".drop-box")
+
+DropBox.initDropBoxes(".drop-box");
+
 This method call will create DropBox objects out of every element on
 the page with a class name "drop-box" and returns a list of the 
 objects created, in the order that they appear in the page.  
+
+You can set any CSS you like on any of the elements, with the 
+exception of the db-list element whose style.display property is
+controlled by the script. To change the way the db-list element 
+appears when visibil you can alter the _ev_showList method.
