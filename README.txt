@@ -33,5 +33,15 @@ objects created, in the order that they appear in the page.
 
 You can set any CSS you like on any of the elements, with the 
 exception of the db-list element whose style.display property is
-controlled by the script. To change the way the db-list element 
-appears when visibil you can alter the _ev_showList method.
+controlled by the script, and the height of the drop-box element
+which is set to the height of the db-label element to keep from 
+shifting surrounding elements when toggling the list. 
+To change the way the db-list element appears when visible you can
+ alter the _ev_showList method.
+
+In order to control the positioning of the DropBox, adjust the CSS of
+the drop-box element, and to change the shape and internal formatting
+adjust the CSS of the db-label element. The CSS for anything inside
+the db-list element (which can literally be anything) is completely
+free for the user to play with, assuming it's not associated with any
+other CSS shifting tools.
