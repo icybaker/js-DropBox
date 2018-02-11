@@ -37,7 +37,7 @@ controlled by the script, and the height of the drop-box element
 which is set to the height of the db-label element to keep from 
 shifting surrounding elements when toggling the list. 
 To change the way the db-list element appears when visible you can
- alter the _ev_showList method.
+alter the _ev_showList method.
 
 In order to control the positioning of the DropBox, adjust the CSS of
 the drop-box element, and to change the shape and internal formatting
