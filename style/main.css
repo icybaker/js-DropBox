@@ -1,3 +1,4 @@
 .drop-box {
-    /* display: inline-block; */
+    display: inline-block;
+    vertical-align: top;
 }
