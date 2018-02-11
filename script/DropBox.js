@@ -9,7 +9,7 @@ class DropBox {
         if(this.isMobile){this.attachListener(this.label,actionMobile,this._ev_toggleList);}
         else{this.attachListener(this.label,action,this._ev_toggleList);}
 
-        this._initStyle(this.label,this.list);
+        this._initStyle(box,this.label,this.list);
     }
 
     checkMobile(){
@@ -27,8 +27,9 @@ class DropBox {
         else{target.style.display = "none";}
     }
 
-    _initStyle(label,list){
+    _initStyle(box,label,list){
         // label.style.cursor = "default";
+        box.style.height = window.getComputedStyle(label,null).height;
         if(window.getComputedStyle(label,null).cursor=="auto"){label.style.cursor="default";} 
         list.style.display = "none";
     }
