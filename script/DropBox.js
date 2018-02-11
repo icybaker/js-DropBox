@@ -4,9 +4,13 @@ class DropBox {
         this.isMobile = this.checkMobile();
         this.label = box.children[0];
         this.list = box.children[1];
+        this.contentArea = this._createContentArea(box,this.label,this.list);
 
         if(this.isMobile){this.attachListener(this.label,actionMobile,this._ev_toggleList);}
         else{this.attachListener(this.label,action,this._ev_toggleList);}
+
+        this.attachListener(window,"click",this._ev_hideList);
+        // this.attachListener(this.contentArea,"click",this._ev_stopPropagation);
 
         this._initStyle(box,this.label,this.list);
     }
@@ -22,8 +26,35 @@ class DropBox {
     }
     _ev_toggleList(evt){
         var target = evt.currentTarget.nextElementSibling;
-        if(target.style.display == "none"){target.style.display = "block";}
+        if(target.style.display == "none"){
+            try{
+               window.activeList.style.display = "none"; 
+            }
+            catch(error){
+                console.log("no list has been activated yet");
+            }
+            target.style.display = "block";            
+            window.activeList = target;
+        }
         else{target.style.display = "none";}
+        evt.stopPropagation();
+    }
+    _ev_hideList(evt){
+        var target = evt.currentTarget.activeList;
+        try{
+            target.style.display = "none";
+        }
+        catch{
+            console.log("no list has been activated yet");
+        }
+    }
+    _createContentArea(box,label,list){
+        var contentArea = document.createElement("div");
+        box.appendChild(contentArea);
+        contentArea.appendChild(label);
+        contentArea.appendChild(list);
+        // contentArea.style.display = "inline-block";
+        return contentArea;
     }
 
     _initStyle(box,label,list){
