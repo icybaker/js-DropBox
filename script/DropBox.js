@@ -1,5 +1,4 @@
 //By Joshua Wiens 10FEB2018
-//DONT FORGET TO FIX HEIGHT BUG
 class DropBox {
     constructor(box,{action = "click",actionMobile = "click"}={}){
         this.isMobile = this.checkMobile();
