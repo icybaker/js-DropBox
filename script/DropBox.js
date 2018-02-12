@@ -44,6 +44,7 @@ class DropBox {
     }
     _ev_stopPropagation(evt){
         evt.stopPropagation();
+        console.log("propagation stopped at list");
     }
     _ev_hideList(evt){
         var target = evt.currentTarget.activeList;
@@ -53,6 +54,7 @@ class DropBox {
         catch{
             console.log("no list has been activated yet");
         }
+        console.log("hide list has been activated")
     }
     _createContentArea(box,label,list){
         var contentArea = document.createElement("div");
