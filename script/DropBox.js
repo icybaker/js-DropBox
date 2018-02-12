@@ -4,7 +4,6 @@ class DropBox {
         this.isMobile = this.checkMobile();
         this._initProperties(box);
 
-        if(box.label.showMenu != true){box.label.showMenu = false;}
 
         if(this.isMobile){DropBox.attachListener(box.label,actionMobile,this._ev_toggleList);}
         else{DropBox.attachListener(box.label,action,this._ev_toggleList);}
@@ -22,6 +21,7 @@ class DropBox {
         box.label = box.children[0];
         box.list = box.children[1];
         box.contentArea = this._createContentArea(box,box.label,box.list);
+        if(box.label.showMenu != true){box.label.showMenu = false;}        
         box.dropIsActive = false;
     }
     _createContentArea(box,label,list){
