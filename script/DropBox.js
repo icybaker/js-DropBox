@@ -6,6 +6,8 @@ class DropBox {
         this.list = box.children[1];
         this.contentArea = this._createContentArea(box,this.label,this.list);
 
+        if(this.label.showMenu != true){this.label.showMenu = false;}
+
         if(this.isMobile){this.attachListener(this.label,actionMobile,this._ev_toggleList);}
         else{this.attachListener(this.label,action,this._ev_toggleList);}
 
@@ -61,7 +63,7 @@ class DropBox {
         // label.style.cursor = "default";
         box.style.height = window.getComputedStyle(label,null).height;
         if(window.getComputedStyle(label,null).cursor=="auto"){label.style.cursor="default";} 
-        list.style.display = "none";
+        if(!label.showMenu){list.style.display = "none";}
     }
 
     static initDropBoxes(selector,{action = "click",actionMobile = "click"}={}){
