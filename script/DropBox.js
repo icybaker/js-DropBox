@@ -40,7 +40,8 @@ class DropBox {
             window.activeList = target;
         }
         else{target.style.display = "none";}
-        console.log("toggle list activated");
+        console.log("toggle list activated by ");
+        console.log(evt.target);
         evt.stopPropagation();
     }
     _ev_stopPropagation(evt){
