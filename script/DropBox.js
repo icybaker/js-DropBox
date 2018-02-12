@@ -5,7 +5,7 @@ class DropBox {
         box.label = box.children[0];
         box.list = box.children[1];
         box.contentArea = this._createContentArea(box,box.label,box.list);
-        box.isActive = false;
+        box.dropIsActive = false;
 
         if(box.label.showMenu != true){box.label.showMenu = false;}
 
@@ -35,18 +35,18 @@ class DropBox {
     }
     _ev_toggleList(evt){
         var box = evt.currentTarget.parentElement.parentElement;
-        if(box.isActive){
+        if(box.dropIsActive){
             box.list.style.display = "none"; 
-            box.isActive = false;           
+            box.dropIsActive = false;           
         }
         else{
             var numSiblings = box.siblings.length;
             for(var i=0;i<numSiblings;i++){
                 box.siblings[i].list.style.display = "none";
-                box.siblings[i].isActive = false;
+                box.siblings[i].dropIsActive = false;
             }
             box.list.style.display = "block";
-            box.isActive = true;
+            box.dropIsActive = true;
         }
         
     }
@@ -57,9 +57,9 @@ class DropBox {
         var dropBoxes = evt.currentTarget.DropBoxes, numBoxes = dropBoxes.length, box;
         for(var i=0;i<numBoxes;i++){
             box = dropBoxes[i].box;
-            if(box.isActive){
+            if(box.dropIsActive){
                 box.list.style.display = "none"; 
-                box.isActive = false;  
+                box.dropIsActive = false;  
             }
         }
     
