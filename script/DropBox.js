@@ -2,83 +2,93 @@
 class DropBox {
     constructor(box,{action = "click",actionMobile = "click"}={}){
         this.isMobile = this.checkMobile();
-        this.label = box.children[0];
-        this.list = box.children[1];
-        this.contentArea = this._createContentArea(box,this.label,this.list);
+        box.label = box.children[0];
+        box.list = box.children[1];
+        box.contentArea = this._createContentArea(box,box.label,box.list);
+        box.isActive = false;
 
-        if(this.label.showMenu != true){this.label.showMenu = false;}
+        if(box.label.showMenu != true){box.label.showMenu = false;}
 
-        if(this.isMobile){this.attachListener(this.label,actionMobile,this._ev_toggleList);}
-        else{this.attachListener(this.label,action,this._ev_toggleList);}
+        if(this.isMobile){DropBox.attachListener(box.label,actionMobile,this._ev_toggleList);}
+        else{DropBox.attachListener(box.label,action,this._ev_toggleList);}
 
-        this.attachListener(this.list,"click",this._ev_stopPropagation);
-        this.attachListener(window,"click",this._ev_hideList);
-        // this.attachListener(this.contentArea,"click",this._ev_stopPropagation);
+        DropBox.attachListener(box.contentArea,"click",this._ev_stopPropagation);
 
-        this._initStyle(box,this.label,this.list);
+        this._initStyle(box,box.label,box.list);
     }
-
     checkMobile(){
         var W = window.innerWidth, H = window.innerHeight;
         if((W/H)>1){return false;}
         else{return true;}
-    }
-
-    attachListener(element,action,listenerFunction){
-        element.addEventListener(action,listenerFunction,false);
-    }
-    _ev_toggleList(evt){
-        var target = evt.currentTarget.nextElementSibling;
-        if(target.style.display == "none"){
-            try{
-               window.activeList.style.display = "none"; 
-            }
-            catch(error){
-                console.log("no list has been activated yet");
-            }
-            target.style.display = "block";            
-            window.activeList = target;
-        }
-        else{target.style.display = "none";}
-        evt.stopPropagation();
-    }
-    _ev_stopPropagation(evt){
-        evt.stopPropagation();
-    }
-    _ev_hideList(evt){
-        var target = evt.currentTarget.activeList;
-        try{
-            target.style.display = "none";
-        }
-        catch{
-            console.log("no list has been activated yet");
-        }
     }
     _createContentArea(box,label,list){
         var contentArea = document.createElement("div");
         box.appendChild(contentArea);
         contentArea.appendChild(label);
         contentArea.appendChild(list);
-        // contentArea.style.display = "inline-block";
         return contentArea;
     }
-
     _initStyle(box,label,list){
-        // label.style.cursor = "default";
         box.style.height = window.getComputedStyle(label,null).height;
         if(window.getComputedStyle(label,null).cursor=="auto"){label.style.cursor="default";} 
         if(!label.showMenu){list.style.display = "none";}
     }
-
+    _ev_toggleList(evt){
+        var box = evt.currentTarget.parentElement.parentElement;
+        if(box.isActive){
+            box.list.style.display = "none"; 
+            box.isActive = false;           
+        }
+        else{
+            var numSiblings = box.siblings.length;
+            for(var i=0;i<numSiblings;i++){
+                box.siblings[i].list.style.display = "none";
+                box.siblings[i].isActive = false;
+            }
+            box.list.style.display = "block";
+            box.isActive = true;
+        }
+        
+    }
+    _ev_stopPropagation(evt){
+        evt.stopPropagation();
+    }
+    static _ev_hideLists(evt){
+        var dropBoxes = evt.currentTarget.DropBoxes, numBoxes = dropBoxes.length, box;
+        for(var i=0;i<numBoxes;i++){
+            box = dropBoxes[i].box;
+            if(box.isActive){
+                box.list.style.display = "none"; 
+                box.isActive = false;  
+            }
+        }
+    
+    }
+    static attachListener(element,action,listenerFunction){
+            element.addEventListener(action,listenerFunction,false);
+    }
     static initDropBoxes(selector,{action = "click",actionMobile = "click"}={}){
         var boxes = document.querySelectorAll(selector), numBoxes = boxes.length;
         var dropBoxes = new Array(numBoxes);
         for(var i=0;i<numBoxes;i++){
             dropBoxes[i] = new DropBox(boxes[i],{action:action,actionMobile:actionMobile});
+            dropBoxes[i].box = boxes[i];
         }
+        var boxParent, numChildren;
+        for(i=0;i<numBoxes;i++){
+            dropBoxes[i].box.siblings = [];
+            boxParent = dropBoxes[i].box.parentElement;
+            numChildren = boxParent.children.length;
+            for(var j=0;j<numChildren;j++){
+                if(dropBoxes[i].box != boxParent.children[j] && boxParent.children[j].matches(selector)){
+                    dropBoxes[i].box.siblings.push(boxParent.children[j]);
+                }
+            }
+        }
+        DropBox.attachListener(window,"click",DropBox._ev_hideLists);        
+        window.DropBoxes = dropBoxes;
         return dropBoxes;
     }
-
     static _doc(){
         var docString = `To use the DropBox class, you simply need to link the DropBox.js file
         into your html file. 
