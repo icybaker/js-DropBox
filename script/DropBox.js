@@ -1,6 +1,6 @@
 //By Joshua Wiens 10FEB2018
 class DropBox {
-    constructor(box,{action = "click",actionMobile = "click"}={}){
+    constructor(box,action,actionMobile){
         this.isMobile = this.checkMobile();
         box.label = box.children[0];
         box.list = box.children[1];
@@ -71,7 +71,7 @@ class DropBox {
         var boxes = document.querySelectorAll(selector), numBoxes = boxes.length;
         var dropBoxes = new Array(numBoxes);
         for(var i=0;i<numBoxes;i++){
-            dropBoxes[i] = new DropBox(boxes[i],{action:action,actionMobile:actionMobile});
+            dropBoxes[i] = new DropBox(boxes[i],action,actionMobile);
             dropBoxes[i].box = boxes[i];
         }
         var boxParent, numChildren;
