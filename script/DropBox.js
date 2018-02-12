@@ -46,7 +46,7 @@ class DropBox {
             var numSiblings = box.siblings.length;
             for(var i=0;i<numSiblings;i++){
                 box.siblings[i].list.style.display = "none";
-                box.siblings[i].label.transform(box,true);
+                box.siblings[i].label.transform(box.siblings.label,true);
                 box.siblings[i].dropIsActive = false;
             }
             box.list.style.display = "block";
