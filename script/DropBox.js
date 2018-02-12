@@ -11,6 +11,7 @@ class DropBox {
         if(this.isMobile){this.attachListener(this.label,actionMobile,this._ev_toggleList);}
         else{this.attachListener(this.label,action,this._ev_toggleList);}
 
+        this.attachListener(this.list,"click",this._ev_stopPropagation);
         this.attachListener(window,"click",this._ev_hideList);
         // this.attachListener(this.contentArea,"click",this._ev_stopPropagation);
 
@@ -39,6 +40,9 @@ class DropBox {
             window.activeList = target;
         }
         else{target.style.display = "none";}
+        evt.stopPropagation();
+    }
+    _ev_stopPropagation(evt){
         evt.stopPropagation();
     }
     _ev_hideList(evt){
