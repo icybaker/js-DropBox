@@ -87,7 +87,6 @@ class DropBox {
         var dropBoxes = new Array(numBoxes);
         for(var i=0;i<numBoxes;i++){
             dropBoxes[i] = new DropBox(boxes[i],action,actionMobile);
-            // dropBoxes[i].attachListener(window,"click",dropBoxes[i]._ev_hideLists)
             dropBoxes[i].box = boxes[i];
         }
         var boxParent, numChildren;
