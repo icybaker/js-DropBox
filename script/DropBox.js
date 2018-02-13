@@ -4,11 +4,9 @@ class DropBox {
         this.isMobile = this.checkMobile();
         this._initProperties(box);
 
-
-        if(this.isMobile){DropBox.attachListener(box.label,actionMobile,this._ev_toggleList);}
-        else{DropBox.attachListener(box.label,action,this._ev_toggleList);}
-
-        DropBox.attachListener(box.contentArea,"click",this._ev_stopPropagation);
+        if(this.isMobile){this.attachListener(box.label,actionMobile,this._ev_toggleList);}
+        else{this.attachListener(box.label,action,this._ev_toggleList);}
+        this.attachListener(box.contentArea,"click",this._ev_stopPropagation);
 
         this._initStyle(box,box.label,box.list);
     }
@@ -21,7 +19,8 @@ class DropBox {
         box.label = box.children[0];
         box.list = box.children[1];
         box.contentArea = this._createContentArea(box,box.label,box.list);
-        if(box.label.showMenu != true){box.label.showMenu = false;}        
+        if(box.label.showMenu != true){box.label.showMenu = false;}//change show menu into a method at some point        
+        box.dropTransform = this._transform;
         box.dropIsActive = false;
     }
     _createContentArea(box,label,list){
@@ -36,9 +35,35 @@ class DropBox {
         if(window.getComputedStyle(label,null).cursor=="auto"){label.style.cursor="default";} 
         if(!label.showMenu){list.style.display = "none";}
     }
+    attachListener(element,action,listenerFunction){
+        element.addEventListener(action,listenerFunction,false);
+    }
     _ev_toggleList(evt){
-        var box = evt.currentTarget.parentElement.parentElement;
-        if(box.dropIsActive){
+        var box = evt.currentTarget.parentElement.parentElement, isActive = box.dropIsActive;
+        box.dropTransform(box,isActive);
+        
+    }
+    _ev_stopPropagation(evt){
+        evt.stopPropagation();
+    }
+    _ev_hideLists(evt){
+        var dropBoxes = evt.currentTarget.DropBoxes, numBoxes = dropBoxes.length, box;
+        for(var i=0;i<numBoxes;i++){
+            box = dropBoxes[i].box;
+            if(box.dropIsActive){
+                DropBox.hideList(box);
+            }
+        }
+    
+    }
+    static hideList(box){
+        box.dropTransform(box,true);
+    }
+    static showList(box){
+        box.dropTransform(box,false);
+    }
+    _transform(box,isActive){
+        if(isActive){
             box.list.style.display = "none"; 
             box.dropIsActive = false;           
         }
@@ -46,36 +71,21 @@ class DropBox {
             var numSiblings = box.siblings.length;
             for(var i=0;i<numSiblings;i++){
                 box.siblings[i].list.style.display = "none";
-                box.siblings[i].label.transform(box.siblings[i].label,true);
+                try{box.siblings[i].label.transform(box.siblings[i].label,true);}
+                catch{console.log("label has no popTransform method");}
                 box.siblings[i].dropIsActive = false;
             }
             box.list.style.display = "block";
             box.dropIsActive = true;
         }
-        
     }
-    _ev_stopPropagation(evt){
-        evt.stopPropagation();
-    }
-    static _ev_hideLists(evt){
-        var dropBoxes = evt.currentTarget.DropBoxes, numBoxes = dropBoxes.length, box;
-        for(var i=0;i<numBoxes;i++){
-            box = dropBoxes[i].box;
-            if(box.dropIsActive){
-                box.list.style.display = "none"; 
-                box.dropIsActive = false;  
-            }
-        }
     
-    }
-    static attachListener(element,action,listenerFunction){
-            element.addEventListener(action,listenerFunction,false);
-    }
     static initDropBoxes(selector,{action = "click",actionMobile = "click"}={}){
         var boxes = document.querySelectorAll(selector), numBoxes = boxes.length;
         var dropBoxes = new Array(numBoxes);
         for(var i=0;i<numBoxes;i++){
             dropBoxes[i] = new DropBox(boxes[i],action,actionMobile);
+            dropBoxes[i].attachListener(window,"click",dropBoxes[i]._ev_hideLists)
             dropBoxes[i].box = boxes[i];
         }
         var boxParent, numChildren;
@@ -88,8 +98,7 @@ class DropBox {
                     dropBoxes[i].box.siblings.push(boxParent.children[j]);
                 }
             }
-        }
-        DropBox.attachListener(window,"click",DropBox._ev_hideLists);        
+        }       
         window.DropBoxes = dropBoxes;
         return dropBoxes;
     }
