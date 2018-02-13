@@ -48,7 +48,7 @@ class DropBox {
     _ev_stopPropagation(evt){
         evt.stopPropagation();
     }
-    static _ev_hideLists(evt){
+    static _ev_hideAllLists(evt){
         var dropBoxes = evt.currentTarget.DropBoxes, numBoxes = dropBoxes.length, box;
         for(var i=0;i<numBoxes;i++){
             box = dropBoxes[i].box;
@@ -102,7 +102,7 @@ class DropBox {
             }
         }       
         window.DropBoxes = dropBoxes;
-        DropBox.attachListener(window,"click",DropBox._ev_hideLists);
+        DropBox.attachListener(window,"click",DropBox._ev_hideAllLists);
         return dropBoxes;
     }
     static _doc(){
