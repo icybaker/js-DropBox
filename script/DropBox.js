@@ -73,7 +73,7 @@ class DropBox {
             var numSiblings = box.siblings.length;
             for(var i=0;i<numSiblings;i++){
                 box.siblings[i].list.style.display = "none";
-                try{box.siblings[i].label.transform(box.siblings[i].label,true);}
+                try{box.siblings[i].label.unpop(box.siblings[i].label,true);}
                 catch{console.log("label has no popTransform method");}
                 box.siblings[i].dropIsActive = false;
             }
@@ -85,9 +85,12 @@ class DropBox {
     static initDropBoxes(selector,{action = "click",actionMobile = "click"}={}){
         var boxes = document.querySelectorAll(selector), numBoxes = boxes.length;
         var dropBoxes = new Array(numBoxes);
+        if(window.DropBoxes == undefined){window.DropBoxes = [];}
         for(var i=0;i<numBoxes;i++){
             dropBoxes[i] = new DropBox(boxes[i],action,actionMobile);
             dropBoxes[i].box = boxes[i];
+            window.DropBoxes.push(dropBoxes[i]);
+            
         }
         var boxParent, numChildren;
         for(i=0;i<numBoxes;i++){
@@ -100,8 +103,11 @@ class DropBox {
                 }
             }
         }       
-        window.DropBoxes = dropBoxes;
-        DropBox.attachListener(window,"click",DropBox._ev_hideAllLists);
+        if(window.DropBoxes.listenerAttached == undefined){
+            DropBox.attachListener(window,"click",DropBox._ev_hideAllLists);
+            window.DropBoxes.listenerAttached = true;
+        }        
+        
         return dropBoxes;
     }
     static _doc(){
